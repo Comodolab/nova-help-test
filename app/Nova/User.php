@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use Comodolab\Nova\Fields\Help\Help;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\ID;
@@ -42,6 +43,8 @@ class User extends Resource
     public function fields(Request $request)
     {
         return [
+            Help::info('Help title', 'Help message!'),
+
             ID::make()->sortable(),
 
             Gravatar::make(),
@@ -56,10 +59,22 @@ class User extends Resource
                 ->creationRules('unique:users,email')
                 ->updateRules('unique:users,email,{{resourceId}}'),
 
+            Help::make('Column title')
+                ->message('Message with <a href="#">link</a>')
+                ->alsoOnIndex()->icon('warning'),
+
             Password::make('Password')
                 ->onlyOnForms()
                 ->creationRules('required', 'string', 'min:8')
                 ->updateRules('nullable', 'string', 'min:8'),
+
+            Help::info('<a href="#">Ciccio</a>')
+                ->message('Message with <a href="#">link</a> and long long test... Try this my friend')
+                ->alsoOnIndex(),
+
+            Help::make('<a href="#">Ciccio</a>')
+                ->message('Message with <a href="#">link</a> and long long test... Try this my friend')
+                ->displayAsHtml()->withSideLabel()->showFullWidthOnDetail()
         ];
     }
 
